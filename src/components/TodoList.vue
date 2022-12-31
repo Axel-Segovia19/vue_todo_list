@@ -53,7 +53,7 @@ computed:{
 },
   methods:{
     addToList(){
-      this.list.push({title: this.listItem.title, todo: this.listItem.todo, id: this.listItem.id++, done: false})
+      this.list.push({title: this.listItem.title, todo: this.listItem.todo, id: this.listItem.id++, done: false, edit: false})
       this.listItem.title = ''
       this.listItem.todo = ''
     },
