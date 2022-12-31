@@ -12,11 +12,11 @@
 <div class="flex">
     <div class="w-full m-2">
       <h1 class="bg-cyan-500 text-center rounded-t-lg">Not Done</h1>
-    <v-list :listArray="notDoneTodos" @remove-in="remove(index)"/>
+    <v-list :listArray="notDoneTodos" @remove-in="remove"/>
     </div>
     <div class="w-full mt-2">
       <h1 class="bg-cyan-500 text-center rounded-t-lg">Done</h1>
-    <v-list :listArray="doneTodos" @remove-in="remove(index)"/>
+    <v-list :listArray="doneTodos" @remove-in="remove"/>
     </div>
     
 </div>
@@ -47,7 +47,7 @@ computed:{
   doneTodos(){
     return this.list.filter(item => item.done)
   },
-  notDoneTodos(){
+  notDoneTodos(){ 
     return this.list.filter(item => !item.done)
   }
 },
@@ -57,9 +57,9 @@ computed:{
       this.listItem.title = ''
       this.listItem.todo = ''
     },
-    remove(index){
-      this.list.splice(index, 1)
-    },
+    remove(id){ //updated this bit due to not deleting correct value from list array
+      this.list.splice(this.list.indexOf(this.list.find(item => item.id == id)), 1)
+    },// used splice instead of filter to remove since I dont want to make a new array holding all values
   }
 }
 </script>
