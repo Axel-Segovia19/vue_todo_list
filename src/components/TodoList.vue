@@ -1,8 +1,8 @@
 <template>
   <div class="rounded-lg w-1/4 m-auto mt-2 shadow-2xl">
     <form class="flex flex-col gap-2 p-3 items-center">
-    <input class="w-full rounded pl-2" placeholder="Title" v-model="listItem.title" id="title"/>
-    <textarea class="w-full rounded pl-2" placeholder="Whats there todo?" v-model="listItem.todo" id="todo"/>
+    <v-input place-holder="Title" v-model="title"/>
+    <v-textarea place-holder="Whats there todo?" v-model="todo"/>
       <button class="bg-blue-500 text-white p-1 self-end border rounded-lg font-bold" @click.prevent="addToList">Add Todo</button>
     </form>
   </div>
@@ -25,20 +25,32 @@
 
 <script>
 import vList from './reusableComponents/vList.vue'
+import vInput from './reusableComponents/vInput.vue'
+import vTextArea from './reusableComponents/vTextArea.vue'
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
 
 export default {
   components:{
-    'v-list' : vList
+    'v-list' : vList,
+    'v-input': vInput,
+    'v-textarea': vTextArea
   },
   name: 'TodoList',
   data(){
     return {
+      v$: useVuelidate(),
       list: [],
-      listItem: {
-        title: '',
-        todo: '',
-        id: 0
-      }
+      title: '',
+      todo: '',
+      id: 0
+      
+    }
+  },
+validations(){
+    return {
+      title : {required},
+      todo : {required}
     }
   },
 computed:{
@@ -48,20 +60,17 @@ computed:{
   notDoneTodos(){ 
     return this.list.filter(item => !item.done)
   },
-  titleIsEmpty(){
-    return this.listItem.title === ""
-  },
-  todoIsEmpty(){
-    return this.listItem.todo === ""
-  }
 },
   methods:{
     addToList(){
-      if(this.titleIsEmpty) return alert('Must have a Title')
-      if(this.todoIsEmpty) return alert('Must have a todo')
-      this.list.push({title: this.listItem.title, todo: this.listItem.todo, id: this.listItem.id++, done: false, edit: false})
-      this.listItem.title = ''
-      this.listItem.todo = ''
+      this.v$.$validate()
+      if(!this.v$.$error){
+        this.list.push({title: this.title, todo: this.todo, id: this.id++, done: false, edit: false})
+        this.title = ''
+        this.todo = '' 
+        } else {
+        alert('Input failed need title')
+      }
     },
     remove(id){ //updated this bit due to not deleting correct value from list array
       this.list.splice(this.list.indexOf(this.list.find(item => item.id == id)), 1)

@@ -15,21 +15,21 @@
         <li v-if="item.edit">
         <div class="flex gap-2 py-1">
         <label for="title-li" class="font-bold">Title:</label>
-         <input id="title-li" class="rounded pl-1" v-model="item.title"/>
+         <v-input id="title-li" v-model="item.title"/>
         </div>
         <div class="flex gap-1 p2-1">
          <label for="todo-li" class="font-bold">Todo:</label>
-        <textarea id="todo-li" class="rounded pl-1" v-model="item.todo"/>
+        <v-textarea id="todo-li" v-model="item.todo"/>
         </div>
         </li>
       </ul>
       <div class="flex">
 
       <div :class="`p-2 flex ${!item.done ? 'bg-green-500' : 'bg-orange-600'}`">
-            <button class="self-center font-bold" type="button" @click.prevent="changeValue(item)">{{!item.done ? 'Done' : 'Not Done'}}</button>
+            <button class="self-center font-bold" type="button" @click.prevent="changeValue(item, 'done')">{{!item.done ? 'Done' : 'Not Done'}}</button>
       </div>
       <div :class="`p-2 ${item.edit ? 'bg-blue-800' : 'bg-blue-500' } rounded-r-lg flex`">
-            <button class="self-center font-bold" @click.prevent="item.edit = !item.edit">{{item.edit ? 'Save' : 'Edit'}}</button>
+            <button class="self-center font-bold" @click.prevent="changeValue(item, 'edit')">{{item.edit ? 'Save' : 'Edit'}}</button>
       </div>
       </div>
     </div>
@@ -37,7 +37,13 @@
 
 
 <script>
+import vInput from './vInput.vue'
+import vTextArea from './vTextArea.vue'
+
 export default {
+  components:{
+    'v-input' : vInput,
+    'v-textarea' : vTextArea},
   emits:['removeIn'],
   name: 'vList',
   props:{
@@ -50,8 +56,8 @@ export default {
     removeIn(id){
       this.$emit('removeIn', id)
     },
-    changeValue(todo){
-      return todo.done = !todo.done
+    changeValue(todo, value){
+      return todo[value] = !todo[value]
     }
   }
   
